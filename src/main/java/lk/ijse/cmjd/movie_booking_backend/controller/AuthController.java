@@ -1,6 +1,8 @@
 package lk.ijse.cmjd.movie_booking_backend.controller;
 
 import jakarta.validation.Valid;
+import lk.ijse.cmjd.movie_booking_backend.dto.AuthResponse;
+import lk.ijse.cmjd.movie_booking_backend.dto.SignInRequest;
 import lk.ijse.cmjd.movie_booking_backend.dto.SignUpRequest;
 import lk.ijse.cmjd.movie_booking_backend.dto.UserResponse;
 import lk.ijse.cmjd.movie_booking_backend.service.AuthService;
@@ -26,5 +28,12 @@ public class AuthController {
         log.info("Received signup request for email: {}", request.getEmail());
         UserResponse response = authService.signUp(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/signin")
+    public ResponseEntity<AuthResponse> signIn(@Valid @RequestBody SignInRequest request) {
+        log.info("Received signin request for email: {}", request.getEmail());
+        AuthResponse response = authService.signIn(request);
+        return ResponseEntity.ok(response);
     }
 }
