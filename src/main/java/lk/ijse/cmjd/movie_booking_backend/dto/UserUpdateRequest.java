@@ -1,6 +1,7 @@
 package lk.ijse.cmjd.movie_booking_backend.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import lk.ijse.cmjd.movie_booking_backend.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,4 +18,7 @@ public class UserUpdateRequest {
 
     @NotBlank(message = "Phone number is required")
     private String phone;
+
+    private String password;
+    private Role role;
 }
