@@ -15,6 +15,8 @@ import java.util.List;
 public interface ShowRepository extends JpaRepository<Show, Long> {
 
     List<Show> findByMovie_Id(Long movieId);
+    boolean existsByMovie_Id(Long movieId);
+    boolean existsByTheatre_Id(Long theatreId);
 
     @Query("SELECT s FROM Show s WHERE " +
            "(:movieId IS NULL OR s.movie.id = :movieId) AND " +
