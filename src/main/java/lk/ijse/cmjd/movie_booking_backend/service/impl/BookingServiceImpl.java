@@ -6,17 +6,20 @@ import lk.ijse.cmjd.movie_booking_backend.entity.Booking;
 import lk.ijse.cmjd.movie_booking_backend.entity.Show;
 import lk.ijse.cmjd.movie_booking_backend.entity.User;
 import lk.ijse.cmjd.movie_booking_backend.enums.BookingStatus;
+import lk.ijse.cmjd.movie_booking_backend.enums.PaymentStatus;
 import lk.ijse.cmjd.movie_booking_backend.enums.ShowStatus;
 import lk.ijse.cmjd.movie_booking_backend.exception.BadRequestException;
 import lk.ijse.cmjd.movie_booking_backend.exception.BusinessRuleException;
 import lk.ijse.cmjd.movie_booking_backend.exception.ResourceNotFoundException;
 import lk.ijse.cmjd.movie_booking_backend.mapper.BookingMapper;
 import lk.ijse.cmjd.movie_booking_backend.repository.BookingRepository;
+import lk.ijse.cmjd.movie_booking_backend.repository.PaymentRepository;
 import lk.ijse.cmjd.movie_booking_backend.repository.ShowRepository;
 import lk.ijse.cmjd.movie_booking_backend.repository.UserRepository;
 import lk.ijse.cmjd.movie_booking_backend.service.BookingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +27,7 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -33,6 +37,7 @@ public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final ShowRepository showRepository;
     private final UserRepository userRepository;
+    private final PaymentRepository paymentRepository;
     private final BookingMapper bookingMapper;
 
     @Override
@@ -87,6 +92,85 @@ public class BookingServiceImpl implements BookingService {
         Booking savedBooking = bookingRepository.save(booking);
         log.info("Successfully created booking ID {} with total amount {}", savedBooking.getId(), totalAmount);
 
+        return bookingMapper.toResponse(savedBooking);
+    }
+
+    @Override
+    public BookingResponse getBookingById(Long id, String currentUserEmail, boolean isAdmin) {
+        log.info("Fetching booking with ID: {} for user {}", id, currentUserEmail);
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found with id: " + id));
+
+        if (!isAdmin && (booking.getUser() == null || !booking.getUser().getEmail().equalsIgnoreCase(currentUserEmail))) {
+            throw new AccessDeniedException("You do not have permission to view this booking");
+        }
+
+        return bookingMapper.toResponse(booking);
+    }
+
+    @Override
+    public List<BookingResponse> getMyBookings(String currentUserEmail) {
+        log.info("Fetching bookings for user: {}", currentUserEmail);
+        User user = userRepository.findByEmail(currentUserEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + currentUserEmail));
+
+        return bookingRepository.findByUser_IdOrderByBookingDateDesc(user.getId()).stream()
+                .map(bookingMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public BookingResponse cancelBooking(Long id, String currentUserEmail, boolean isAdmin) {
+        log.info("Cancelling booking with ID: {} requested by user {}", id, currentUserEmail);
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found with id: " + id));
+
+        if (!isAdmin && (booking.getUser() == null || !booking.getUser().getEmail().equalsIgnoreCase(currentUserEmail))) {
+            throw new AccessDeniedException("You do not have permission to cancel this booking");
+        }
+
+        if (booking.getStatus() == BookingStatus.CANCELLED) {
+            throw new BusinessRuleException("Booking is already cancelled");
+        }
+
+        if (booking.getShow() != null && booking.getShow().getStatus() == ShowStatus.COMPLETED) {
+            throw new BusinessRuleException("Cannot cancel booking for a completed show");
+        }
+
+        booking.setStatus(BookingStatus.CANCELLED);
+
+        paymentRepository.findByBooking_Id(booking.getId()).ifPresent(payment -> {
+            if (payment.getStatus() == PaymentStatus.COMPLETED) {
+                payment.setStatus(PaymentStatus.REFUNDED);
+                paymentRepository.save(payment);
+                log.info("Payment ID {} refunded for cancelled booking ID {}", payment.getId(), booking.getId());
+            }
+        });
+
+        Booking savedBooking = bookingRepository.save(booking);
+        log.info("Successfully cancelled booking ID: {}", savedBooking.getId());
+        return bookingMapper.toResponse(savedBooking);
+    }
+
+    @Override
+    public List<BookingResponse> getAllBookings() {
+        log.info("Fetching all bookings (Admin)");
+        return bookingRepository.findAll().stream()
+                .map(bookingMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public BookingResponse updateBookingStatus(Long id, BookingStatus status) {
+        log.info("Updating booking status for ID: {} to {}", id, status);
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found with id: " + id));
+
+        booking.setStatus(status);
+        Booking savedBooking = bookingRepository.save(booking);
+        log.info("Successfully updated booking ID {} to status {}", savedBooking.getId(), status);
         return bookingMapper.toResponse(savedBooking);
     }
 
