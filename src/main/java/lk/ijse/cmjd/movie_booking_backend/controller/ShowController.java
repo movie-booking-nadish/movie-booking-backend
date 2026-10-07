@@ -72,4 +72,10 @@ public class ShowController {
         log.info("Request: GET /api/shows/movie/{}", movieId);
         return ResponseEntity.ok(showService.getShowsByMovieId(movieId));
     }
+
+    @GetMapping("/{id}/seats")
+    public ResponseEntity<lk.ijse.cmjd.movie_booking_backend.dto.SeatAvailabilityResponse> getSeatAvailability(@PathVariable Long id) {
+        log.info("Request: GET /api/shows/{}/seats", id);
+        return ResponseEntity.ok(showService.getSeatAvailability(id));
+    }
 }

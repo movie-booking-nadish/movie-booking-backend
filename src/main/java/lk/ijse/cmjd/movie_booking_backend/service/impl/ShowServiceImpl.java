@@ -1,5 +1,6 @@
 package lk.ijse.cmjd.movie_booking_backend.service.impl;
 
+import lk.ijse.cmjd.movie_booking_backend.dto.SeatAvailabilityResponse;
 import lk.ijse.cmjd.movie_booking_backend.dto.ShowRequest;
 import lk.ijse.cmjd.movie_booking_backend.dto.ShowResponse;
 import lk.ijse.cmjd.movie_booking_backend.entity.Movie;
@@ -12,6 +13,7 @@ import lk.ijse.cmjd.movie_booking_backend.exception.BusinessRuleException;
 import lk.ijse.cmjd.movie_booking_backend.exception.DuplicateResourceException;
 import lk.ijse.cmjd.movie_booking_backend.exception.ResourceNotFoundException;
 import lk.ijse.cmjd.movie_booking_backend.mapper.ShowMapper;
+import lk.ijse.cmjd.movie_booking_backend.repository.BookingRepository;
 import lk.ijse.cmjd.movie_booking_backend.repository.MovieRepository;
 import lk.ijse.cmjd.movie_booking_backend.repository.ShowRepository;
 import lk.ijse.cmjd.movie_booking_backend.repository.TheatreRepository;
@@ -33,6 +35,7 @@ public class ShowServiceImpl implements ShowService {
     private final ShowRepository showRepository;
     private final MovieRepository movieRepository;
     private final TheatreRepository theatreRepository;
+    private final BookingRepository bookingRepository;
     private final ShowMapper showMapper;
 
     @Override
@@ -139,5 +142,22 @@ public class ShowServiceImpl implements ShowService {
         return shows.stream()
                 .map(showMapper::toResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public SeatAvailabilityResponse getSeatAvailability(Long showId) {
+        log.info("Fetching seat availability for show id: {}", showId);
+        Show show = showRepository.findById(showId)
+                .orElseThrow(() -> new ResourceNotFoundException("Show not found with id: " + showId));
+
+        int capacity = show.getTheatre().getCapacity();
+        List<String> bookedSeats = bookingRepository.findBookedSeatsByShowId(showId);
+
+        return SeatAvailabilityResponse.builder()
+                .showId(show.getId())
+                .capacity(capacity)
+                .seatsPerRow(10)
+                .bookedSeats(bookedSeats)
+                .build();
     }
 }
