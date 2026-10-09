@@ -1,0 +1,776 @@
+{
+	"info": {
+		"_postman_id": "b1a2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+		"name": "Movie Ticket Booking System API",
+		"description": "Postman API Collection for CMJD 114/115 Movie Ticket Booking System Spring Boot Backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Sign In (Customer)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.token) {",
+									"    pm.collectionVariables.set(\"token\", jsonData.token);",
+									"    console.log(\"Saved JWT token to collection variable: token\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"customer@moviebooking.com\",\n    \"password\": \"Customer@123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/signin",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "signin"]
+						}
+					}
+				},
+				{
+					"name": "Sign In (Admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.token) {",
+									"    pm.collectionVariables.set(\"token\", jsonData.token);",
+									"    console.log(\"Saved Admin JWT token to collection variable: token\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@moviebooking.com\",\n    \"password\": \"Admin@123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/signin",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "signin"]
+						}
+					}
+				},
+				{
+					"name": "Sign Up",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fullName\": \"Jane Doe\",\n    \"email\": \"jane.doe@example.com\",\n    \"password\": \"Password@123\",\n    \"phone\": \"0771234567\",\n    \"role\": \"ROLE_CUSTOMER\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/signup",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "signup"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Movies",
+			"item": [
+				{
+					"name": "Get All Movies",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/movies?title=&genre=&language=&status=",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "movies"],
+							"query": [
+								{ "key": "title", "value": "" },
+								{ "key": "genre", "value": "" },
+								{ "key": "language", "value": "" },
+								{ "key": "status", "value": "" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Movie By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/movies/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "movies", "1"]
+						}
+					}
+				},
+				{
+					"name": "Create Movie (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{token}}", "type": "string" }
+							]
+						},
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Dune: Part Two\",\n    \"description\": \"Paul Atreides unites with Chani and the Fremen.\",\n    \"duration\": 166,\n    \"language\": \"English\",\n    \"genre\": \"SCI_FI\",\n    \"releaseDate\": \"2024-03-01\",\n    \"status\": \"NOW_SHOWING\",\n    \"posterUrl\": \"https://images.unsplash.com/photo-1534447677768-be436bb09401\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/movies",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "movies"]
+						}
+					}
+				},
+				{
+					"name": "Update Movie (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{token}}", "type": "string" }
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Inception (Remastered)\",\n    \"description\": \"A thief who steals corporate secrets through dream-sharing.\",\n    \"duration\": 148,\n    \"language\": \"English\",\n    \"genre\": \"SCI_FI\",\n    \"releaseDate\": \"2010-07-16\",\n    \"status\": \"NOW_SHOWING\",\n    \"posterUrl\": \"https://images.unsplash.com/photo-1478720568477-152d9b164e26\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/movies/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "movies", "1"]
+						}
+					}
+				},
+				{
+					"name": "Delete Movie (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{token}}", "type": "string" }
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/movies/5",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "movies", "5"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Theatres",
+			"item": [
+				{
+					"name": "Get All Theatres",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/theatres",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "theatres"]
+						}
+					}
+				},
+				{
+					"name": "Get Theatre By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/theatres/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "theatres", "1"]
+						}
+					}
+				},
+				{
+					"name": "Create Theatre (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{token}}", "type": "string" }
+							]
+						},
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Liberty Cinema\",\n    \"location\": \"Kollupitiya, Colombo 03\",\n    \"capacity\": 120,\n    \"status\": \"ACTIVE\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/theatres",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "theatres"]
+						}
+					}
+				},
+				{
+					"name": "Update Theatre (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{token}}", "type": "string" }
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Savoy 3D Cinema\",\n    \"location\": \"Wellawatte, Colombo 06\",\n    \"capacity\": 150,\n    \"status\": \"ACTIVE\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/theatres/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "theatres", "1"]
+						}
+					}
+				},
+				{
+					"name": "Delete Theatre (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{token}}", "type": "string" }
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/theatres/2",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "theatres", "2"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Shows",
+			"item": [
+				{
+					"name": "Get Shows (with filters)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/shows?movieId=&theatreId=&date=",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "shows"],
+							"query": [
+								{ "key": "movieId", "value": "" },
+								{ "key": "theatreId", "value": "" },
+								{ "key": "date", "value": "" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Show By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/shows/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "shows", "1"]
+						}
+					}
+				},
+				{
+					"name": "Get Show Seats",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/shows/1/seats",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "shows", "1", "seats"]
+						}
+					}
+				},
+				{
+					"name": "Create Show (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{token}}", "type": "string" }
+							]
+						},
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"movieId\": 1,\n    \"theatreId\": 1,\n    \"showDate\": \"2026-10-15\",\n    \"showTime\": \"18:30:00\",\n    \"ticketPrice\": 1200.00,\n    \"status\": \"SCHEDULED\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/shows",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "shows"]
+						}
+					}
+				},
+				{
+					"name": "Update Show (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{token}}", "type": "string" }
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"movieId\": 1,\n    \"theatreId\": 1,\n    \"showDate\": \"2026-10-15\",\n    \"showTime\": \"19:00:00\",\n    \"ticketPrice\": 1500.00,\n    \"status\": \"SCHEDULED\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/shows/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "shows", "1"]
+						}
+					}
+				},
+				{
+					"name": "Delete Show (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{token}}", "type": "string" }
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/shows/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "shows", "1"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Bookings",
+			"item": [
+				{
+					"name": "Create Booking",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{token}}", "type": "string" }
+							]
+						},
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"showId\": 1,\n    \"seatNumbers\": [\"A1\", \"A2\"]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/bookings",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "bookings"]
+						}
+					}
+				},
+				{
+					"name": "Get My Bookings",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{token}}", "type": "string" }
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/bookings/my-bookings",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "bookings", "my-bookings"]
+						}
+					}
+				},
+				{
+					"name": "Get Booking By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{token}}", "type": "string" }
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/bookings/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "bookings", "1"]
+						}
+					}
+				},
+				{
+					"name": "Cancel Booking",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{token}}", "type": "string" }
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/bookings/1/cancel",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "bookings", "1", "cancel"]
+						}
+					}
+				},
+				{
+					"name": "Get All Bookings (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{token}}", "type": "string" }
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/bookings",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "bookings"]
+						}
+					}
+				},
+				{
+					"name": "Update Booking Status (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{token}}", "type": "string" }
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/bookings/1/status?status=CANCELLED",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "bookings", "1", "status"],
+							"query": [
+								{ "key": "status", "value": "CANCELLED" }
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Payments",
+			"item": [
+				{
+					"name": "Create Payment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{token}}", "type": "string" }
+							]
+						},
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"bookingId\": 1,\n    \"paymentMethod\": \"CARD\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/payments",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "payments"]
+						}
+					}
+				},
+				{
+					"name": "Process Payment (Success)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{token}}", "type": "string" }
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/payments/1/process?success=true",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "payments", "1", "process"],
+							"query": [
+								{ "key": "success", "value": "true" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Process Payment (Failed Simulation)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{token}}", "type": "string" }
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/payments/1/process?success=false",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "payments", "1", "process"],
+							"query": [
+								{ "key": "success", "value": "false" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Payment By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{token}}", "type": "string" }
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/payments/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "payments", "1"]
+						}
+					}
+				},
+				{
+					"name": "Get Payment Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{token}}", "type": "string" }
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/payments/1/status",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "payments", "1", "status"]
+						}
+					}
+				},
+				{
+					"name": "Get Payment By Booking ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{token}}", "type": "string" }
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/payments/booking/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "payments", "booking", "1"]
+						}
+					}
+				},
+				{
+					"name": "Get All Payments (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{token}}", "type": "string" }
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/payments",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "payments"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Users (Admin)",
+			"item": [
+				{
+					"name": "Get All Users",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{token}}", "type": "string" }
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/users",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users"]
+						}
+					}
+				},
+				{
+					"name": "Get User By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{token}}", "type": "string" }
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/users/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users", "1"]
+						}
+					}
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{token}}", "type": "string" }
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fullName\": \"Jane Smith\",\n    \"phone\": \"0779998888\",\n    \"role\": \"ROLE_CUSTOMER\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/users/2",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users", "2"]
+						}
+					}
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{token}}", "type": "string" }
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/users/2",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users", "2"]
+						}
+					}
+				}
+			]
+		}
+	]
+}
