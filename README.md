@@ -271,3 +271,55 @@ Initial database seed also includes 5 movies with varying genres/statuses, 2 act
 java -jar target/movie-booking-backend-0.0.1-SNAPSHOT.jar
 ```
 The server will start at `http://localhost:8080`.
+
+
+---
+
+## 9. Future Expansion Proposals
+
+### Proposal 1: Multiple Screens / Auditoriums per Theatre
+- **Feature Overview:** Support multiplex cinemas where a single theatre facility manages multiple auditoriums (e.g., "Screen 1 (Standard)", "Screen 2 (IMAX)", "Screen 3 (VIP)"), each with distinct seating capacities, audio/visual formats, and tier pricing.
+- **Why It Is Useful:** In real-world cinema operations, theatres host multiple concurrent screenings. Without screen management, a theatre can only host one show at a specific timeslot across the entire venue.
+- **Affected Existing Entities:**
+  - `Theatre`: Represents the physical venue/branch rather than an individual cinema hall.
+  - `Show`: Associates with an individual `Screen` instead of directly with `Theatre`.
+  - `Booking`: Seating capacity and seat assignments validate against the specific screen.
+- **New Entities Needed:**
+  - `Screen`: Fields include `id`, `theatre_id`, `name` (e.g., "Screen 1"), `screen_type` (IMAX, 3D, Standard, 4DX), `total_seats`.
+  - `Seat`: Optional entity modeling individual physical seats with row, number, and category (Regular, Premium, Recliner).
+- **Database Relationship Extension:**
+  - `theatres (1) <---> (N) screens`
+  - `screens (1) <---> (N) shows`
+  - `screens (1) <---> (N) seats`
+
+### Proposal 2: Promotional & Discount Codes
+- **Feature Overview:** Enable promotional coupons and discount vouchers (e.g., `WELCOME10`, `SAVE20`) that customers can apply at checkout to receive percentage or flat-amount discounts.
+- **Why It Is Useful:** Essential for marketing campaigns, seasonal promotions, student/senior discounts, and partner offers, driving customer acquisition and sales volume.
+- **Affected Existing Entities:**
+  - `Booking`: Stores `original_amount`, `discount_amount`, `final_amount`, and optional reference to applied promo code.
+  - `Payment`: Charges the discounted `final_amount`.
+- **New Entities Needed:**
+  - `Promotion`: Fields include `id`, `code` (Unique), `discount_type` (`PERCENTAGE`, `FLAT`), `discount_value`, `min_spend`, `max_discount`, `valid_from`, `valid_to`, `usage_limit`, `times_used`, `is_active`.
+  - `UserPromotionUsage`: Tracks user-specific usage counts to enforce single-use restrictions per customer.
+- **Database Relationship Extension:**
+  - `promotions (1) <---> (N) bookings` (nullable foreign key `promotion_id` on `bookings`)
+  - `users (1) <---> (N) user_promotion_usages <---> (1) promotions`
+
+---
+
+## 10. Repository Submission
+
+- **GitHub Organization:** [`movie-booking-nadish`](https://github.com/movie-booking-nadish)
+- **Backend Repository:** [`https://github.com/movie-booking-nadish/movie-booking-backend`](https://github.com/movie-booking-nadish/movie-booking-backend)
+- **Frontend Repository:** [`https://github.com/movie-booking-nadish/movie-booking-frontend`](https://github.com/movie-booking-nadish/movie-booking-frontend)
+
+### Quick Start
+```bash
+# Clone the repository
+git clone https://github.com/movie-booking-nadish/movie-booking-backend.git
+cd movie-booking-backend
+
+# Ensure MySQL is running on port 3306 (or configure DB_URL, DB_USERNAME, DB_PASSWORD)
+# Run the application
+./mvnw spring-boot:run
+```
