@@ -14,6 +14,7 @@ public interface ShowService {
     void deleteShow(Long id);
     ShowResponse getShowById(Long id);
     List<ShowResponse> getAllShows(Long movieId, Long theatreId, LocalDate showDate, ShowStatus status);
+    lk.ijse.cmjd.movie_booking_backend.dto.PageResponse<ShowResponse> getShowsPaginated(Long movieId, Long theatreId, LocalDate showDate, ShowStatus status, int page, int size);
     List<ShowResponse> getShowsByMovieId(Long movieId);
     SeatAvailabilityResponse getSeatAvailability(Long showId);
 }

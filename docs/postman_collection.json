@@ -138,6 +138,22 @@
 					}
 				},
 				{
+					"name": "Get Movies (Paginated)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/movies?page=0&size=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "movies"],
+							"query": [
+								{ "key": "page", "value": "0" },
+								{ "key": "size", "value": "10" }
+							]
+						}
+					}
+				},
+				{
 					"name": "Get Movie By ID",
 					"request": {
 						"method": "GET",
@@ -333,6 +349,22 @@
 					}
 				},
 				{
+					"name": "Get Shows (Paginated)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/shows?page=0&size=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "shows"],
+							"query": [
+								{ "key": "page", "value": "0" },
+								{ "key": "size", "value": "10" }
+							]
+						}
+					}
+				},
+				{
 					"name": "Get Show By ID",
 					"request": {
 						"method": "GET",
@@ -470,6 +502,28 @@
 					}
 				},
 				{
+					"name": "Get My Bookings (Paginated)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{token}}", "type": "string" }
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/bookings/my-bookings?page=0&size=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "bookings", "my-bookings"],
+							"query": [
+								{ "key": "page", "value": "0" },
+								{ "key": "size", "value": "10" }
+							]
+						}
+					}
+				},
+				{
 					"name": "Get Booking By ID",
 					"request": {
 						"auth": {
@@ -520,6 +574,28 @@
 							"raw": "{{baseUrl}}/api/bookings",
 							"host": ["{{baseUrl}}"],
 							"path": ["api", "bookings"]
+						}
+					}
+				},
+				{
+					"name": "Get All Bookings (Paginated) (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{token}}", "type": "string" }
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/bookings?page=0&size=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "bookings"],
+							"query": [
+								{ "key": "page", "value": "0" },
+								{ "key": "size", "value": "10" }
+							]
 						}
 					}
 				},

@@ -136,6 +136,12 @@ public class ShowServiceImpl implements ShowService {
     }
 
     @Override
+    public lk.ijse.cmjd.movie_booking_backend.dto.PageResponse<ShowResponse> getShowsPaginated(Long movieId, Long theatreId, LocalDate showDate, ShowStatus status, int page, int size) {
+        List<ShowResponse> all = getAllShows(movieId, theatreId, showDate, status);
+        return lk.ijse.cmjd.movie_booking_backend.dto.PageResponse.fromList(all, page, size);
+    }
+
+    @Override
     public List<ShowResponse> getShowsByMovieId(Long movieId) {
         log.info("Fetching shows for movie id: {}", movieId);
         List<Show> shows = showRepository.findByMovie_Id(movieId);

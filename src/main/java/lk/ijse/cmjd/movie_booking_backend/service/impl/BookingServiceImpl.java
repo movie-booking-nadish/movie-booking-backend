@@ -120,6 +120,12 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    public lk.ijse.cmjd.movie_booking_backend.dto.PageResponse<BookingResponse> getMyBookingsPaginated(String currentUserEmail, int page, int size) {
+        List<BookingResponse> all = getMyBookings(currentUserEmail);
+        return lk.ijse.cmjd.movie_booking_backend.dto.PageResponse.fromList(all, page, size);
+    }
+
+    @Override
     @Transactional
     public BookingResponse cancelBooking(Long id, String currentUserEmail, boolean isAdmin) {
         log.info("Cancelling booking with ID: {} requested by user {}", id, currentUserEmail);
@@ -159,6 +165,12 @@ public class BookingServiceImpl implements BookingService {
         return bookingRepository.findAll().stream()
                 .map(bookingMapper::toResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public lk.ijse.cmjd.movie_booking_backend.dto.PageResponse<BookingResponse> getAllBookingsPaginated(int page, int size) {
+        List<BookingResponse> all = getAllBookings();
+        return lk.ijse.cmjd.movie_booking_backend.dto.PageResponse.fromList(all, page, size);
     }
 
     @Override

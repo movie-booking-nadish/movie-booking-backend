@@ -50,14 +50,19 @@ public class ShowController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ShowResponse>> getAllShows(
+    public ResponseEntity<?> getAllShows(
             @RequestParam(required = false) Long movieId,
             @RequestParam(required = false) Long theatreId,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate showDate,
-            @RequestParam(required = false) ShowStatus status
+            @RequestParam(required = false) ShowStatus status,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false, defaultValue = "10") Integer size
     ) {
-        log.info("Request: GET /api/shows (movieId={}, theatreId={}, showDate={}, status={})",
-                movieId, theatreId, showDate, status);
+        log.info("Request: GET /api/shows (movieId={}, theatreId={}, showDate={}, status={}, page={}, size={})",
+                movieId, theatreId, showDate, status, page, size);
+        if (page != null) {
+            return ResponseEntity.ok(showService.getShowsPaginated(movieId, theatreId, showDate, status, page, size));
+        }
         return ResponseEntity.ok(showService.getAllShows(movieId, theatreId, showDate, status));
     }
 

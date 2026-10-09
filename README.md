@@ -191,6 +191,27 @@ erDiagram
 | `PUT` | `/api/users/{id}` | `ADMIN` | Update user profile / role |
 | `DELETE` | `/api/users/{id}` | `ADMIN` | Delete user (prevents self-deletion) |
 
+
+### Pagination Support (Optional Query Parameters)
+The following listing endpoints support optional pagination parameters:
+- `GET /api/movies?page=0&size=10`
+- `GET /api/shows?page=0&size=10`
+- `GET /api/bookings/my-bookings?page=0&size=10`
+- `GET /api/bookings?page=0&size=10` (ADMIN)
+
+When `page` is omitted, the full unpaginated list is returned (`List<T>`). When `page` (and optional `size`, default `10`) is specified, the response envelope is wrapped in a `PageResponse<T>`:
+```json
+{
+  "content": [ ... ],
+  "page": 0,
+  "size": 10,
+  "totalElements": 25,
+  "totalPages": 3,
+  "first": true,
+  "last": false
+}
+```
+
 ---
 
 ## 6. Authentication Guide

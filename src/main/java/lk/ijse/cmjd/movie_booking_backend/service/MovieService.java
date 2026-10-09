@@ -12,4 +12,5 @@ public interface MovieService {
     void deleteMovie(Long id);
     MovieResponse getMovieById(Long id);
     List<MovieResponse> getAllMovies(String title, String language, String genre, MovieStatus status);
+    lk.ijse.cmjd.movie_booking_backend.dto.PageResponse<MovieResponse> getMoviesPaginated(String title, String language, String genre, MovieStatus status, int page, int size);
 }

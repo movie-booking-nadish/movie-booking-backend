@@ -47,15 +47,20 @@ public class MovieController {
     }
 
     @GetMapping
-    public ResponseEntity<List<MovieResponse>> getAllMovies(
+    public ResponseEntity<?> getAllMovies(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String language,
             @RequestParam(required = false) String genre,
-            @RequestParam(required = false) MovieStatus status
+            @RequestParam(required = false) MovieStatus status,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false, defaultValue = "10") Integer size
     ) {
-        log.info("Request: GET /api/movies (title={}, language={}, genre={}, status={})", title, language, genre, status);
-        List<MovieResponse> movies = movieService.getAllMovies(title, language, genre, status);
-        return ResponseEntity.ok(movies);
+        log.info("Request: GET /api/movies (title={}, language={}, genre={}, status={}, page={}, size={})",
+                title, language, genre, status, page, size);
+        if (page != null) {
+            return ResponseEntity.ok(movieService.getMoviesPaginated(title, language, genre, status, page, size));
+        }
+        return ResponseEntity.ok(movieService.getAllMovies(title, language, genre, status));
     }
 
     @GetMapping("/{id}")

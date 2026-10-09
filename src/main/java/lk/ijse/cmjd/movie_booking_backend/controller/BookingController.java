@@ -46,8 +46,15 @@ public class BookingController {
     }
 
     @GetMapping("/my-bookings")
-    public ResponseEntity<List<BookingResponse>> getMyBookings(Authentication authentication) {
-        log.info("Request: GET /api/bookings/my-bookings by user {}", authentication.getName());
+    public ResponseEntity<?> getMyBookings(
+            Authentication authentication,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false, defaultValue = "10") Integer size
+    ) {
+        log.info("Request: GET /api/bookings/my-bookings by user {} (page={}, size={})", authentication.getName(), page, size);
+        if (page != null) {
+            return ResponseEntity.ok(bookingService.getMyBookingsPaginated(authentication.getName(), page, size));
+        }
         return ResponseEntity.ok(bookingService.getMyBookings(authentication.getName()));
     }
 
@@ -63,8 +70,14 @@ public class BookingController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<BookingResponse>> getAllBookings() {
-        log.info("Admin request: GET /api/bookings");
+    public ResponseEntity<?> getAllBookings(
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false, defaultValue = "10") Integer size
+    ) {
+        log.info("Admin request: GET /api/bookings (page={}, size={})", page, size);
+        if (page != null) {
+            return ResponseEntity.ok(bookingService.getAllBookingsPaginated(page, size));
+        }
         return ResponseEntity.ok(bookingService.getAllBookings());
     }
 

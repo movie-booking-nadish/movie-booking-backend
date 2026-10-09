@@ -10,7 +10,9 @@ public interface BookingService {
     BookingResponse createBooking(BookingRequest request, String currentUserEmail);
     BookingResponse getBookingById(Long id, String currentUserEmail, boolean isAdmin);
     List<BookingResponse> getMyBookings(String currentUserEmail);
+    lk.ijse.cmjd.movie_booking_backend.dto.PageResponse<BookingResponse> getMyBookingsPaginated(String currentUserEmail, int page, int size);
     BookingResponse cancelBooking(Long id, String currentUserEmail, boolean isAdmin);
     List<BookingResponse> getAllBookings();
+    lk.ijse.cmjd.movie_booking_backend.dto.PageResponse<BookingResponse> getAllBookingsPaginated(int page, int size);
     BookingResponse updateBookingStatus(Long id, BookingStatus status);
 }

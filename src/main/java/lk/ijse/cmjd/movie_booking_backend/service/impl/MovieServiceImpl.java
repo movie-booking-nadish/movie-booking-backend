@@ -89,4 +89,10 @@ public class MovieServiceImpl implements MovieService {
                 .map(movieMapper::toResponse)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public lk.ijse.cmjd.movie_booking_backend.dto.PageResponse<MovieResponse> getMoviesPaginated(String title, String language, String genre, MovieStatus status, int page, int size) {
+        List<MovieResponse> all = getAllMovies(title, language, genre, status);
+        return lk.ijse.cmjd.movie_booking_backend.dto.PageResponse.fromList(all, page, size);
+    }
 }
