@@ -113,6 +113,12 @@ public class ShowServiceImpl implements ShowService {
         log.info("Deleting show with id: {}", id);
         Show show = showRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Show not found with id: " + id));
+
+        if (bookingRepository.existsByShow_Id(id)) {
+            log.warn("Cannot delete show with id: {} as it has associated bookings", id);
+            throw new DuplicateResourceException("Cannot delete show with id " + id + " because it has existing bookings");
+        }
+
         showRepository.delete(show);
         log.info("Successfully deleted show with id: {}", id);
     }
