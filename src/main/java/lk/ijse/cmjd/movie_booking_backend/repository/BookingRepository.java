@@ -13,6 +13,10 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findByUser_IdOrderByBookingDateDesc(Long userId);
 
+    boolean existsByShow_Id(Long showId);
+
+    boolean existsByUser_Id(Long userId);
+
     @Query("SELECT s FROM Booking b JOIN b.seatNumbers s WHERE b.show.id = :showId AND b.status != lk.ijse.cmjd.movie_booking_backend.enums.BookingStatus.CANCELLED")
     List<String> findBookedSeatsByShowId(@Param("showId") Long showId);
 }
