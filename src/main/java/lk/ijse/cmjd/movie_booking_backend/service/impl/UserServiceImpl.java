@@ -4,8 +4,10 @@ import lk.ijse.cmjd.movie_booking_backend.dto.UserResponse;
 import lk.ijse.cmjd.movie_booking_backend.dto.UserUpdateRequest;
 import lk.ijse.cmjd.movie_booking_backend.entity.User;
 import lk.ijse.cmjd.movie_booking_backend.exception.BadRequestException;
+import lk.ijse.cmjd.movie_booking_backend.exception.DuplicateResourceException;
 import lk.ijse.cmjd.movie_booking_backend.exception.ResourceNotFoundException;
 import lk.ijse.cmjd.movie_booking_backend.mapper.UserMapper;
+import lk.ijse.cmjd.movie_booking_backend.repository.BookingRepository;
 import lk.ijse.cmjd.movie_booking_backend.repository.UserRepository;
 import lk.ijse.cmjd.movie_booking_backend.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final BookingRepository bookingRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
@@ -76,6 +79,11 @@ public class UserServiceImpl implements UserService {
         if (user.getEmail().equalsIgnoreCase(currentUserEmail)) {
             log.warn("Admin attempted to delete their own account: {}", currentUserEmail);
             throw new BadRequestException("An admin cannot delete their own account");
+        }
+
+        if (bookingRepository.existsByUser_Id(id)) {
+            log.warn("Cannot delete user with id: {} as they have associated bookings", id);
+            throw new DuplicateResourceException("Cannot delete user with id " + id + " because they have existing bookings");
         }
 
         userRepository.delete(user);
