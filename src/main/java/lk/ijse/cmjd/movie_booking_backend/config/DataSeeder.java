@@ -93,7 +93,7 @@ public class DataSeeder implements CommandLineRunner {
                 .genre("Sci-Fi")
                 .releaseDate(LocalDate.now().minusMonths(6))
                 .status(MovieStatus.NOW_SHOWING)
-                .posterUrl("https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=500")
+                .posterUrl("https://image.tmdb.org/t/p/w500/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg")
                 .build();
 
         Movie movie2 = Movie.builder()
@@ -104,7 +104,7 @@ public class DataSeeder implements CommandLineRunner {
                 .genre("Sci-Fi")
                 .releaseDate(LocalDate.now().minusMonths(3))
                 .status(MovieStatus.NOW_SHOWING)
-                .posterUrl("https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500")
+                .posterUrl("https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg")
                 .build();
 
         Movie movie3 = Movie.builder()
@@ -115,7 +115,7 @@ public class DataSeeder implements CommandLineRunner {
                 .genre("Action")
                 .releaseDate(LocalDate.now().plusMonths(1))
                 .status(MovieStatus.UPCOMING)
-                .posterUrl("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=500")
+                .posterUrl("https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg")
                 .build();
 
         Movie movie4 = Movie.builder()
@@ -126,7 +126,7 @@ public class DataSeeder implements CommandLineRunner {
                 .genre("Sci-Fi")
                 .releaseDate(LocalDate.now().plusMonths(2))
                 .status(MovieStatus.UPCOMING)
-                .posterUrl("https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=500")
+                .posterUrl("https://image.tmdb.org/t/p/w500/6izwz7rsy95ARzTR3poZ8H6c5pp.jpg")
                 .build();
 
         Movie movie5 = Movie.builder()
@@ -137,7 +137,7 @@ public class DataSeeder implements CommandLineRunner {
                 .genre("Action")
                 .releaseDate(LocalDate.now().minusYears(1))
                 .status(MovieStatus.ENDED)
-                .posterUrl("https://images.unsplash.com/photo-1509281373149-e957c6296406?w=500")
+                .posterUrl("https://image.tmdb.org/t/p/w500/or06FN3Dka5tukK1e9sl16pB3iy.jpg")
                 .build();
 
         List<Movie> savedMovies = movieRepository.saveAll(List.of(movie1, movie2, movie3, movie4, movie5));
